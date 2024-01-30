@@ -15,8 +15,13 @@ then
 git clone https://github.com/brendangregg/FlameGraph 
 fi
 
+# regular
 ./perf script --header | egrep -v "( __libc_start| LazyCompile | v8::internal::| Builtin:| Stub:| LoadIC:|\[unknown\]| LoadPolymorphicIC:)" | sed 's/ LazyCompile:[*~]\?/ /' | ./FlameGraph/stackcollapse-perf.pl | ./FlameGraph/flamegraph.pl > flame1.svg
 cp flame1.svg "/usr/src/app/out/flame-internal-$NODE_VERSION.svg"
+
+#inverted
+./perf script --header | egrep -v "( __libc_start| LazyCompile | v8::internal::| Builtin:| Stub:| LoadIC:|\[unknown\]| LoadPolymorphicIC:)" | sed 's/ LazyCompile:[*~]\?/ /' | ./FlameGraph/stackcollapse-perf.pl | ./FlameGraph/flamegraph.pl --inverted --reverse > flame1.svg
+cp flame1.svg "/usr/src/app/out/flame-internal-$NODE_VERSION-inverted.svg"
 
 # Stackvis -  another method to generate the flamegraph, but sometimes they look collapsed
 # so i'll stick with brendangregg
